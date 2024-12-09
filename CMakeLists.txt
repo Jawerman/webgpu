@@ -18,9 +18,17 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(webgpu)
 
+# add_executable(
+#   App
+#   src/main.cpp
+#   src/webgpu-utils.h
+#   src/webgpu-utils.cpp
+# )
+
+file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.h" "src/*.hpp")
 add_executable(
   App
-  src/main.cpp
+  ${SOURCES}
 )
 
 # Add the 'webgpu' target as a dependency of our App
