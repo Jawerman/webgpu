@@ -2,6 +2,10 @@
 
 #include "webgpu-utils.h"
 
+#ifdef WEBGPU_BACKEND_WGPU
+#  include <webgpu/wgpu.h>
+#endif // WEBGPU_BACKEND_WGPU
+
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif // __EMSCRIPTEN__
@@ -81,11 +85,53 @@ int main() {
   wgpuDeviceSetUncapturedErrorCallback(device, onDeviceError,
                                        nullptr /* pUserData */);
 
-  // We no longer need to access the adapter once we have the device
-  wgpuAdapterRelease(adapter);
-
   // Display information about the device
   inspectDevice(device);
+
+  // device queue
+
+  WGPUQueue queue = wgpuDeviceGetQueue(device);
+
+  auto onQueueWorkDone = [](WGPUQueueWorkDoneStatus status, void *) {
+    std::cout << "Queue work finished with status: " << status << std::endl;
+  };
+  wgpuQueueOnSubmittedWorkDone(queue, onQueueWorkDone, nullptr);
+
+  WGPUCommandEncoderDescriptor encoderDesc = {};
+  encoderDesc.nextInChain = nullptr;
+  encoderDesc.label = "My command encoder";
+  WGPUCommandEncoder encoder =
+      wgpuDeviceCreateCommandEncoder(device, &encoderDesc);
+
+  wgpuCommandEncoderInsertDebugMarker(encoder, "Do one thing");
+  wgpuCommandEncoderInsertDebugMarker(encoder, "Do another thing");
+
+  WGPUCommandBufferDescriptor cmdBufferDesc = {};
+  cmdBufferDesc.nextInChain = nullptr;
+  cmdBufferDesc.label = "Command buffer";
+  WGPUCommandBuffer command = wgpuCommandEncoderFinish(encoder, &cmdBufferDesc);
+  wgpuCommandEncoderRelease(encoder);
+
+  std::cout << "Submitting command..." << std::endl;
+  wgpuQueueSubmit(queue, 1, &command);
+  wgpuCommandBufferRelease(command);
+  std::cout << "Command submited." << std::endl;
+
+  for (int i = 0; i < 5; i++) {
+    std::cout << "Tick/Poll device..." << std::endl;
+#if defined(WEBGPU_BACKEND_DAWN)
+    wgpuDeviceTick(device);
+#elif defined(WEBGPU_BACKEND_WGPU)
+    wgpuDevicePoll(device, false, nullptr);
+#elif defined(WEBGPU_BACKEND_EMSCRIPTEN)
+    emscripten_sleep(100);
+#endif
+  }
+
+  wgpuQueueRelease(queue);
+
+  // We no longer need to access the adapter once we have the device
+  wgpuAdapterRelease(adapter);
 
   wgpuDeviceRelease(device);
 
