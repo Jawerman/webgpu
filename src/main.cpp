@@ -1,4 +1,5 @@
 #include "webgpu-utils.h"
+#include <GLFW/glfw3.h>
 
 #include <webgpu/webgpu.h>
 #ifdef WEBGPU_BACKEND_WGPU
@@ -114,6 +115,27 @@ int main() {
 
   wgpuQueueRelease(queue);
   wgpuDeviceRelease(device);
+
+  if (!glfwInit()) {
+    std::cerr << "Could not initialize GLFW!" << std::endl;
+    return 1;
+  }
+
+  // Create the window
+  GLFWwindow *window =
+      glfwCreateWindow(640, 480, "Learn WebGPU", nullptr, nullptr);
+
+  if (!window) {
+    std::cerr << "Could not open window!" << std::endl;
+    glfwTerminate();
+    return 1;
+  }
+
+  while(!glfwWindowShouldClose(window)) {
+    glfwPollEvents();
+  }
+  // // At the end of the program, destroy the window
+  glfwDestroyWindow(window);
 
   return 0;
 }

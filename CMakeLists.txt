@@ -7,9 +7,40 @@ project(
   LANGUAGES CXX C
 )
 
+
+# Fetchs glfw
+if (NOT EMSCRIPTEN)
+  FetchContent_Declare(
+  glfw
+  GIT_REPOSITORY https://github.com/glfw/glfw
+  GIT_TAG 3.4
+)
+  FetchContent_MakeAvailable(glfw)
+else()
+  # Emscripten has built-in support for GLFW but requires the `-sUSE_GLFW=3` link option:
+  add_library(glfw INTERFACE)
+  target_link_options(glfw INTERFACE -sUSE_GLFW=3)
+endif()
+
+# if (NOT EMSCRIPTEN)
+#     add_subdirectory(glfw)
+# else()
+#     # Emscripten has built-in support for GLFW but requires the `-sUSE_GLFW=3` link option:
+#     add_library(glfw INTERFACE)
+#     target_link_options(glfw INTERFACE -sUSE_GLFW=3)
+# endif()
+
+# if (NOT EMSCRIPTEN)
+#     add_subdirectory(glfw)
+# else()
+#     # Emscripten has built-in support for GLFW but requires the `-sUSE_GLFW=3` link option:
+#     add_library(glfw INTERFACE)
+#     target_link_options(glfw INTERFACE -sUSE_GLFW=3)
+# endif()
+
+
 # Include webgpu directory, to define the 'webgpu' target
 # add_subdirectory(webgpu)
-
 # Fetchs webgpu distribution
 FetchContent_Declare(
   webgpu
@@ -32,7 +63,7 @@ add_executable(
 )
 
 # Add the 'webgpu' target as a dependency of our App
-target_link_libraries(App PRIVATE webgpu)
+target_link_libraries(App PRIVATE webgpu glfw)
 
 # The application's binary must find wgpu.dll or libwgpu.so at runtime,
 # so we automatically copy it (it's called WGPU_RUNTIME_LIB in general)
@@ -70,8 +101,11 @@ endif()
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 # generate compile_flags.txt
+# "E:\git\cpp\webgpu\build\_deps\glfw-src\include\GLFW\glfw3.h"
 set(COMPILE_FLAGS_TXT "${CMAKE_CURRENT_SOURCE_DIR}/src/compile_flags.txt")
+
 set(COMPILE_FLAGS "-I${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/webgpu-backend-wgpu-src/include")
+set(COMPILE_FLAGS "${COMPILE_FLAGS}\n-I${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/glfw-src/include")
 
 # Elimina el archivo si ya existe
 if(EXISTS ${COMPILE_FLAGS_TXT})
