@@ -56,6 +56,13 @@ FetchContent_MakeAvailable(webgpu)
 #   src/webgpu-utils.cpp
 # )
 
+FetchContent_Declare(
+  glfw3webgpu
+  GIT_REPOSITORY https://github.com/eliemichel/glfw3webgpu
+  GIT_TAG main
+)
+FetchContent_MakeAvailable(glfw3webgpu)
+
 file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.h" "src/*.hpp")
 add_executable(
   App
@@ -63,7 +70,7 @@ add_executable(
 )
 
 # Add the 'webgpu' target as a dependency of our App
-target_link_libraries(App PRIVATE webgpu glfw)
+target_link_libraries(App PRIVATE webgpu glfw glfw3webgpu)
 
 # The application's binary must find wgpu.dll or libwgpu.so at runtime,
 # so we automatically copy it (it's called WGPU_RUNTIME_LIB in general)
@@ -104,9 +111,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # "E:\git\cpp\webgpu\build\_deps\glfw-src\include\GLFW\glfw3.h"
 set(COMPILE_FLAGS_TXT "${CMAKE_CURRENT_SOURCE_DIR}/src/compile_flags.txt")
 
-set(COMPILE_FLAGS "-I${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/webgpu-backend-wgpu-src/include")
-set(COMPILE_FLAGS "${COMPILE_FLAGS}\n-I${CMAKE_CURRENT_SOURCE_DIR}/build/_deps/glfw-src/include")
-
+set(COMPILE_FLAGS "-I${CMAKE_BINARY_DIR}/_deps/webgpu-backend-wgpu-src/include")
+set(COMPILE_FLAGS "${COMPILE_FLAGS}\n-I${CMAKE_BINARY_DIR}/_deps/glfw-src/include")
+set(COMPILE_FLAGS "${COMPILE_FLAGS}\n-I${CMAKE_BINARY_DIR}/_deps/glfw3webgpu-src")
 # Elimina el archivo si ya existe
 if(EXISTS ${COMPILE_FLAGS_TXT})
   file(REMOVE ${COMPILE_FLAGS_TXT})
