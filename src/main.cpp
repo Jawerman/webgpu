@@ -9,9 +9,9 @@
 // #include <emscripten.h>
 // #endif // __EMSCRIPTEN__
 
-#include "application.hpp"
 // #include <cassert>
 #include <iostream>
+#include "application.hpp"
 
 int main() {
   Application app;
@@ -31,7 +31,7 @@ int main() {
   while (app.IsRunning()) {
     app.MainLoop();
   }
-  std::cout << "After Loop" << std::endl;
+  std::cout << "After Loop again" << std::endl;
 #endif // __EMSCRIPTEN__
 
   app.Terminate();

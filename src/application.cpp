@@ -3,8 +3,8 @@
 #include <iostream>
 #include <webgpu/webgpu.h>
 
-#include "application.hpp"
 #include "webgpu-utils.h"
+#include "application.hpp"
 
 bool Application::Initialize() {
   if (!glfwInit()) {
@@ -40,7 +40,7 @@ bool Application::Initialize() {
 
   // Get adapter
   std::cout << "Requesting Adapter..." << std::endl;
-  this->surface = glfwCreateWindowWGPUSurface(instance, this->window);
+  this->surface = glfwGetWGPUSurface(instance, this->window);
 
   WGPURequestAdapterOptions adapterOpts = {};
   adapterOpts.nextInChain = nullptr;
@@ -87,9 +87,9 @@ bool Application::Initialize() {
 }
 
 void Application::Terminate() {
+  wgpuDeviceRelease(this->device);
   wgpuQueueRelease(this->queue);
   wgpuSurfaceRelease(this->surface);
-  wgpuDeviceRelease(this->device);
   glfwDestroyWindow(this->window);
   glfwTerminate();
 }

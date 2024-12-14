@@ -1,6 +1,6 @@
 #pragma once
-#include <GLFW/glfw3.h>
 
+#include <GLFW/glfw3.h>
 #include <webgpu/webgpu.h>
 #ifdef WEBGPU_BACKEND_WGPU
 #include <webgpu/wgpu.h>

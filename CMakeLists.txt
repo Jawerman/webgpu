@@ -9,13 +9,15 @@ project(
 
 
 # Fetchs glfw
-if (NOT EMSCRIPTEN)
+if(NOT EMSCRIPTEN)
+
   FetchContent_Declare(
-  glfw
-  GIT_REPOSITORY https://github.com/glfw/glfw
-  GIT_TAG 3.4
-)
+    glfw
+    GIT_REPOSITORY https://github.com/glfw/glfw
+    GIT_TAG 3.4
+  )
   FetchContent_MakeAvailable(glfw)
+
 else()
   # Emscripten has built-in support for GLFW but requires the `-sUSE_GLFW=3` link option:
   add_library(glfw INTERFACE)
@@ -59,7 +61,7 @@ FetchContent_MakeAvailable(webgpu)
 FetchContent_Declare(
   glfw3webgpu
   GIT_REPOSITORY https://github.com/eliemichel/glfw3webgpu
-  GIT_TAG main
+  GIT_TAG v1.1.0
 )
 FetchContent_MakeAvailable(glfw3webgpu)
 
@@ -84,9 +86,9 @@ set_directory_properties(App
   CMAKE_COMPILE_WARNING_AS_ERROR ON
 )
 
-if (MSVC)
+if(MSVC)
   target_compile_options(App PRIVATE /W4)
-elseif (CMAKE_COMPILER_IS_GNUCXX)
+elseif(CMAKE_COMPILER_IS_GNUCXX)
   target_compile_options(App PRIVATE -Wall -Wextra -pedantic)
 endif()
 
@@ -98,7 +100,7 @@ if(XCODE)
 endif()
 
 # Options that are specific to Emscripten
-if (EMSCRIPTEN)
+if(EMSCRIPTEN)
   # Generate a full web page rather than a simple WebAssembly module
   set_target_properties(App PROPERTIES SUFFIX ".html")
   # Enable the use of emscripten_sleep()
@@ -106,21 +108,21 @@ if (EMSCRIPTEN)
 endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON CACHE INTERNAL "" FORCE)
 # generate compile_flags.txt
-# "E:\git\cpp\webgpu\build\_deps\glfw-src\include\GLFW\glfw3.h"
-set(COMPILE_FLAGS_TXT "${CMAKE_CURRENT_SOURCE_DIR}/src/compile_flags.txt")
-
-set(COMPILE_FLAGS "-I${CMAKE_BINARY_DIR}/_deps/webgpu-backend-wgpu-src/include")
-set(COMPILE_FLAGS "${COMPILE_FLAGS}\n-I${CMAKE_BINARY_DIR}/_deps/glfw-src/include")
-set(COMPILE_FLAGS "${COMPILE_FLAGS}\n-I${CMAKE_BINARY_DIR}/_deps/glfw3webgpu-src")
-# Elimina el archivo si ya existe
-if(EXISTS ${COMPILE_FLAGS_TXT})
-  file(REMOVE ${COMPILE_FLAGS_TXT})
-endif()
-
-file(GENERATE
-  OUTPUT ${COMPILE_FLAGS_TXT}
-  CONTENT "${COMPILE_FLAGS}"
-)
-message(STATUS "Generated file: ${COMPILE_FLAGS_TXT} with flags: ${COMPILE_FLAGS_TXT}")
+# set(COMPILE_FLAGS_TXT "${CMAKE_CURRENT_SOURCE_DIR}/src/compile_flags.txt")
+#
+# set(COMPILE_FLAGS "-I${CMAKE_BINARY_DIR}/_deps/webgpu-backend-wgpu-src/include")
+# set(COMPILE_FLAGS "${COMPILE_FLAGS}\n-I${CMAKE_BINARY_DIR}/_deps/dawn-src/include")
+# set(COMPILE_FLAGS "${COMPILE_FLAGS}\n-I${CMAKE_BINARY_DIR}/_deps/glfw-src/include")
+# set(COMPILE_FLAGS "${COMPILE_FLAGS}\n-I${CMAKE_BINARY_DIR}/_deps/glfw3webgpu-src")
+# # Elimina el archivo si ya existe
+# if(EXISTS ${COMPILE_FLAGS_TXT})
+#   file(REMOVE ${COMPILE_FLAGS_TXT})
+# endif()
+#
+# file(GENERATE
+#   OUTPUT ${COMPILE_FLAGS_TXT}
+#   CONTENT "${COMPILE_FLAGS}"
+# )
+# message(STATUS "Generated file: ${COMPILE_FLAGS_TXT} with flags: ${COMPILE_FLAGS_TXT}")
