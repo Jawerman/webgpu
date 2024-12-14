@@ -48,6 +48,7 @@ bool Application::Initialize() {
 
   WGPUAdapter adapter = requestAdapterSync(instance, &adapterOpts);
   std::cout << "Got adapter: " << adapter << std::endl;
+  inspectAdapter(adapter);
   wgpuInstanceRelease(instance);
 
   // Get device
@@ -70,6 +71,7 @@ bool Application::Initialize() {
 
   this->device = requestDeviceSync(adapter, &deviceDesc);
   std::cout << "Got device" << device << std::endl;
+  inspectDevice(this->device);
   wgpuAdapterRelease(adapter);
 
   wgpuDeviceSetUncapturedErrorCallback(

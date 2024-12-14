@@ -1,16 +1,3 @@
-// #include "webgpu-utils.h"
-// #include <GLFW/glfw3.h>
-// #include <webgpu/webgpu.h>
-// #ifdef WEBGPU_BACKEND_WGPU
-// #include <webgpu/wgpu.h>
-// #endif // WEBGPU_BACKEND_WGPU
-
-// #ifdef __EMSCRIPTEN__
-// #include <emscripten.h>
-// #endif // __EMSCRIPTEN__
-
-// #include <cassert>
-#include <iostream>
 #include "application.hpp"
 
 int main() {
@@ -27,11 +14,9 @@ int main() {
   };
   emscripten_set_main_loop_arg(callback, &app, 0, true);
 #else
-  std::cout << "Before Loop" << std::endl;
   while (app.IsRunning()) {
     app.MainLoop();
   }
-  std::cout << "After Loop again" << std::endl;
 #endif // __EMSCRIPTEN__
 
   app.Terminate();
