@@ -1,15 +1,3 @@
-// #include "webgpu-utils.h"
-// #include <GLFW/glfw3.h>
-// #include <webgpu/webgpu.h>
-// #ifdef WEBGPU_BACKEND_WGPU
-// #include <webgpu/wgpu.h>
-// #endif // WEBGPU_BACKEND_WGPU
-
-// #ifdef __EMSCRIPTEN__
-// #include <emscripten.h>
-// #endif // __EMSCRIPTEN__
-
-// #include <cassert>
 #include <iostream>
 #include "application.hpp"
 
