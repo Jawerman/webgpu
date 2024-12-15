@@ -1,10 +1,10 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-#include <webgpu/webgpu.h>
-#ifdef WEBGPU_BACKEND_WGPU
-#include <webgpu/wgpu.h>
-#endif // WEBGPU_BACKEND_WGPU
+#include <memory>
+#include <webgpu/webgpu.hpp>
+
+using namespace wgpu;
 
 class Application {
 public:
@@ -21,10 +21,11 @@ public:
   bool IsRunning();
 
 private:
-  GLFWwindow *window;
-  WGPUDevice device;
-  WGPUQueue queue;
-  WGPUSurface surface;
+  GLFWwindow *m_window;
+  Device m_device;
+  Queue m_queue;
+  Surface m_surface;
+  std::unique_ptr<ErrorCallback> m_uncapturedErrorCallbackHandle;
 
-  WGPUTextureView GetNextSurfaceTextureView();
+  TextureView GetNextSurfaceTextureView();
 };
